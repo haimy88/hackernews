@@ -8,6 +8,8 @@ import {
   Divider,
 } from "@mui/material";
 import Logo from "../images/logo.svg";
+import LogoWordsLight from "../images/logowordslight.svg";
+import LogoWordsDark from "../images/logowordsdark.svg";
 import Moon from "../images/moon.svg";
 import Sun from "../images/sun.svg";
 import ReactSwitch from "react-switch";
@@ -31,22 +33,21 @@ export default function Banner() {
 
   return (
     <>
-      <Box sx={{ height: "4px", bgcolor: "secondary.main" }}></Box>
-      <Box sx={{ height: "33px", mt: "49px", ml: "90px", display: "flex" }}>
+      <Box
+        sx={{
+          height: "33px",
+          mt: "49px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <img src={Logo}></img>
-        <Typography
-          align="left"
-          variant="h5"
-          sx={{
-            ml: "17px",
-            fontWeight: "800",
-            color: "primary.main",
-            width: 161,
-            fontFamily: "Open Sans",
-          }}
-        >
-          Hacker News
-        </Typography>
+        {currentTheme === "light" && (
+          <img src={LogoWordsLight} className="logo_words"></img>
+        )}
+        {currentTheme === "dark" && (
+          <img src={LogoWordsDark} className="logo_words"></img>
+        )}
         <Box>
           <List
             disablePadding={true}
@@ -60,7 +61,6 @@ export default function Banner() {
             </ListItem>
             <Divider
               orientation="vertical"
-              light="false"
               flexItem
               variant="middle"
               sx={{
@@ -88,7 +88,6 @@ export default function Banner() {
               justifyContent: "flex-end",
               alignItems: "center",
               p: 1,
-              mr: 6,
             }}
           >
             <img

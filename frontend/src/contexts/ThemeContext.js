@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material/";
 
@@ -21,6 +21,17 @@ const lightTheme = createTheme({
       default: "#FFFFFF",
     },
   },
+  typography: {
+    fontFamily: "Ubuntu Mono",
+    fontSize: "18px",
+    type1: {
+      fontFamily: "Open Sans",
+    },
+    type2: {
+      fontFamily: "Open Sans",
+      fontSize: "10px",
+    },
+  },
 });
 
 const darkTheme = createTheme({
@@ -34,6 +45,17 @@ const darkTheme = createTheme({
     },
     background: {
       default: "#1E2025",
+    },
+  },
+  typography: {
+    fontFamily: "Ubuntu Mono",
+    fontSize: "18px",
+    type1: {
+      fontFamily: "Open Sans",
+    },
+    type2: {
+      fontFamily: "Open Sans",
+      fontSize: "10px",
     },
   },
 });

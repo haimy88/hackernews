@@ -8,9 +8,13 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-import StarUnfilled from "../images/star_unfilled.svg";
+import StarUnfilledLight from "../images/star_unfilled_light.svg";
+import StarUnfilledDark from "../images/star_unfilled_dark.svg";
+import { useThemeContext } from "../contexts/ThemeContext";
 
 export default function TopArticles() {
+  const { currentTheme } = useThemeContext();
+
   const dividerStyle = {
     height: "10px",
     borderRightWidth: 1,
@@ -39,7 +43,7 @@ export default function TopArticles() {
           }}
         >
           <ListItemText
-            sx={{ ml: "-10px" }}
+            sx={{ ml: "-15px" }}
             primary={
               <React.Fragment>
                 {"Physicicsts Create A crystal from electrons"}
@@ -96,7 +100,14 @@ export default function TopArticles() {
                       mr: 0.5,
                     }}
                   >
-                    <img className="star" src={StarUnfilled} />
+                    <img
+                      className="star"
+                      src={
+                        currentTheme === "light"
+                          ? StarUnfilledLight
+                          : StarUnfilledDark
+                      }
+                    />
                   </IconButton>
                   <Typography
                     component="span"

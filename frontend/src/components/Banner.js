@@ -1,13 +1,6 @@
 import React from "react";
 import Navigation from "../components/Navigation";
-import {
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import Logo from "../images/logo.svg";
 import LogoWordsLight from "../images/logowordslight.svg";
 import LogoWordsDark from "../images/logowordsdark.svg";

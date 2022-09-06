@@ -4,15 +4,6 @@ import Footer from "../components/Footer";
 import { Box, Button } from "@mui/material";
 import TopArticles from "../components/TopArticles";
 
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  IconButton,
-} from "@mui/material";
-
 export default function Home() {
   return (
     <>

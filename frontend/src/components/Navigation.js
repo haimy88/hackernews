@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, List, ListItem, ListItemText, Divider } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function Navigation() {
   const listStyle = {
@@ -17,7 +18,7 @@ export default function Navigation() {
         disablePadding={true}
         sx={{ display: "flex", fontSize: 14, fontWeight: "bold" }}
       >
-        <ListItem button disablePadding={true}>
+        <ListItem button component={Link} to="/" disablePadding={true}>
           <ListItemText primaryTypographyProps={listStyle} primary="latest" />
         </ListItem>
         <Divider
@@ -30,7 +31,7 @@ export default function Navigation() {
             borderColor: "primary.main",
           }}
         />
-        <ListItem button disablePadding={true}>
+        <ListItem button component={Link} to="/starred" disablePadding={true}>
           <ListItemText primary="starred" primaryTypographyProps={listStyle} />
         </ListItem>
       </List>

@@ -9,7 +9,8 @@ import Sun from "../images/sun.svg";
 import ReactSwitch from "react-switch";
 import { useThemeContext } from "../contexts/ThemeContext";
 
-export default function Banner() {
+export default function Banner(props) {
+  const { homeActive, starredActive } = props;
   const { currentTheme, setCurrentTheme } = useThemeContext();
 
   const toggleTheme = () => {
@@ -33,7 +34,7 @@ export default function Banner() {
         {currentTheme === "dark" && (
           <img src={LogoWordsDark} className="logo_words"></img>
         )}
-        <Navigation />
+        <Navigation homeActive={homeActive} starredActive={starredActive} />
         <Box
           sx={{
             flex: 1,

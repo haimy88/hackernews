@@ -4,11 +4,13 @@ import Footer from "../components/Footer";
 import { Box, Button } from "@mui/material";
 
 export default function Starred() {
+  const starredActive = true;
+
   return (
     <>
       <Box sx={{ height: "4px", bgcolor: "secondary.main" }}></Box>
       <Box sx={{ ml: "90px", mr: "90px" }}>
-        <Banner />
+        <Banner starredActive={starredActive} />
         <Button
           variant="contained"
           color="secondary"

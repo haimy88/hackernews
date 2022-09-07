@@ -276,7 +276,11 @@ export default function TopArticles() {
                       variant="type2"
                       color="primary.light"
                     >
-                      {starredArticles.includes(item) ? "saved" : "save"}
+                      {starredArticles.filter(
+                        (article) => item.id === article.id
+                      ).length
+                        ? "saved"
+                        : "save"}
                     </Typography>
                   </Box>
                 </React.Fragment>

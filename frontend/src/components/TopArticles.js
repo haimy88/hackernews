@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import StarUnfilledLight from "../images/star_unfilled_light.svg";
 import StarUnfilledDark from "../images/star_unfilled_dark.svg";
+import StarFilled from "../images/star_filled.svg";
 import axios from "axios";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import { getArticleData } from "../features/DisplayedArticles";
+import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 
 export default function TopArticles() {
   const { currentTheme } = useThemeContext();
@@ -25,7 +27,9 @@ export default function TopArticles() {
   const [displayedArticles, setDisplayedArticles] = useState([]);
 
   // const displayedArticles = useSelector((state) => state.articles.value);
-  // const dispatch = useDispatch();
+
+  const starredArticles = useSelector((state) => state.starred.value);
+  const dispatch = useDispatch();
 
   const getStories = async () => {
     setIsLoading(true);
@@ -57,14 +61,44 @@ export default function TopArticles() {
     stories.map((article) => {
       setDisplayedArticles((current) => [...current, article]);
     });
-    console.log(displayedArticles);
     setIsLoading(false);
   };
+
+  const addStar = (article) => {
+    dispatch(addArticle(article));
+  };
+
+  const deleteStar = (article) => {
+    dispatch(deleteArticle(article));
+  };
+
+  // const updateStarredDisplay = () => {
+  //   let editedDisplayedArticles = [...displayedArticles.slice()];
+  //   editedDisplayedArticles.filter((article) => {
+  //     starredArticles.includes(article)
+  //       ? (article.starred = true)
+  //       : (article.starred = false);
+  //   });
+  //   setDisplayedArticles(editedDisplayedArticles);
+  // };
+
+  // const formatStar = (article) => {
+  //   starredArticles.includes(article) ? true : false;
+  // };
 
   useEffect(() => {
     localStorage.clear();
     getStories();
   }, []);
+
+  useEffect(() => {
+    console.log(displayedArticles);
+  }, [displayedArticles]);
+
+  // useEffect(() => {
+  //   console.log(starredArticles);
+  //   updateStarredDisplay();
+  // }, [starredArticles]);
 
   const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
 
@@ -208,27 +242,40 @@ export default function TopArticles() {
                       variant="middle"
                       sx={dividerStyle}
                     />
-                    <IconButton
-                      sx={{
-                        p: 0,
-                        mr: 0.5,
-                      }}
-                    >
-                      <img
-                        className="star"
-                        src={
-                          currentTheme === "light"
-                            ? StarUnfilledLight
-                            : StarUnfilledDark
-                        }
-                      />
-                    </IconButton>
+                    {starredArticles.includes(item) ? (
+                      <IconButton
+                        sx={{
+                          p: 0,
+                          mr: 0.5,
+                        }}
+                        onClick={() => deleteStar(item)}
+                      >
+                        <img className="star" src={StarFilled} />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        sx={{
+                          p: 0,
+                          mr: 0.5,
+                        }}
+                        onClick={() => addStar(item)}
+                      >
+                        <img
+                          className="star"
+                          src={
+                            currentTheme === "light"
+                              ? StarUnfilledLight
+                              : StarUnfilledDark
+                          }
+                        />
+                      </IconButton>
+                    )}
                     <Typography
                       component="span"
                       variant="type2"
                       color="primary.light"
                     >
-                      save
+                      {starredArticles.includes(item) ? "saved" : "save"}
                     </Typography>
                   </Box>
                 </React.Fragment>

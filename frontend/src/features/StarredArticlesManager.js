@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialStateValue = [];
 
-export const articlesSlice = createSlice({
+export const starredSlice = createSlice({
   name: "starred",
   initialState: { value: initialStateValue },
   reducers: {
@@ -21,6 +21,6 @@ export const articlesSlice = createSlice({
 });
 
 export const { addArticle, deleteArticle, getArticleData } =
-  articlesSlice.actions;
+  starredSlice.actions;
 
-export default articlesSlice.reducer;
+export default starredSlice.reducer;

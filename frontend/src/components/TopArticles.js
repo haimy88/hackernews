@@ -17,7 +17,6 @@ import axios from "axios";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import { getArticleData } from "../features/DisplayedArticles";
-// import { Link } from "react-router-dom";
 
 export default function TopArticles() {
   const { currentTheme } = useThemeContext();

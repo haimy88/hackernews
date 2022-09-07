@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import articlesReducer from "../features/DisplayedArticles";
+// import articlesReducer from "../features/DisplayedArticles";
+import starredReducer from "../features/StarredArticlesManager";
 
 export const store = configureStore({
   reducer: {
-    articles: articlesReducer,
+    // articles: articlesReducer,
+    starred: starredReducer,
   },
 });

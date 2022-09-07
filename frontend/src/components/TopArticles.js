@@ -21,13 +21,12 @@ import { getArticleData } from "../features/DisplayedArticles";
 
 export default function TopArticles() {
   const { currentTheme } = useThemeContext();
-
-  const displayedArticles = useSelector((state) => state.articles.value);
   let allArticlesApis = JSON.parse(localStorage.getItem("articleApis"));
   const [isLoading, setIsLoading] = useState(false);
+  const [displayedArticles, setDisplayedArticles] = useState([]);
 
-  // const [displayedArticles, setDisplayedArticles] = useState([]);
-  const dispatch = useDispatch();
+  // const displayedArticles = useSelector((state) => state.articles.value);
+  // const dispatch = useDispatch();
 
   const getStories = async () => {
     setIsLoading(true);
@@ -53,9 +52,13 @@ export default function TopArticles() {
         axios.get(endpoint).then(({ data }) => data)
       )
     );
+    // stories.map((article) => {
+    //   dispatch(getArticleData(article));
+    // });
     stories.map((article) => {
-      dispatch(getArticleData(article));
+      setDisplayedArticles((current) => [...current, article]);
     });
+    console.log(displayedArticles);
     setIsLoading(false);
   };
 
@@ -137,6 +140,7 @@ export default function TopArticles() {
                         // href={item.url} TODO Add Href
                         rel="noopener"
                         target="_blank"
+                        color="inherit"
                       >
                         {" "}
                         {item.url}
@@ -157,9 +161,26 @@ export default function TopArticles() {
                       variant="type2"
                       color="primary.light"
                     >
-                      {item.score} points by {item.by}{" "}
-                      {Math.round((Date.now() / 1000 - item.time) / 3600)} hours
-                      ago
+                      {item.score} points by{" "}
+                      <Link
+                        underline="hover"
+                        // href=
+                        rel="noopener"
+                        target="_blank"
+                        color="inherit"
+                      >
+                        {item.by}
+                      </Link>{" "}
+                      <Link
+                        underline="hover"
+                        // href={item.url} TODO Add Href
+                        rel="noopener"
+                        target="_blank"
+                        color="inherit"
+                      >
+                        {Math.round((Date.now() / 1000 - item.time) / 3600)}{" "}
+                        hours ago
+                      </Link>
                     </Typography>
                     <Divider
                       orientation="vertical"

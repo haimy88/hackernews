@@ -7,12 +7,17 @@ import {
   ListItemText,
   Divider,
   Link,
+  IconButton,
 } from "@mui/material";
 import { useThemeContext } from "../contexts/ThemeContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { deleteArticle } from "../features/StarredArticlesManager";
 
 export default function StarredArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
+
+  const dispatch = useDispatch();
 
   const dividerStyle = {
     height: "10px",
@@ -136,6 +141,25 @@ export default function StarredArticles() {
                         variant="middle"
                         sx={dividerStyle}
                       />
+                      <IconButton
+                        sx={{
+                          p: 0,
+                          mr: 0.2,
+                        }}
+                        onClick={() => dispatch(deleteArticle(item))}
+                        disableRipple
+                      >
+                        <RemoveIcon
+                          sx={{ p: 0, width: "70%", color: "primary.light" }}
+                        />
+                      </IconButton>
+                      <Typography
+                        component="span"
+                        variant="type2"
+                        color="primary.light"
+                      >
+                        remove
+                      </Typography>
                     </Box>
                   </React.Fragment>
                 }

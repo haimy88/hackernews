@@ -164,7 +164,7 @@ export default function TopArticles() {
                       {item.score} points by{" "}
                       <Link
                         underline="hover"
-                        // href=
+                        href={`https://news.ycombinator.com/user?id=${item.by}`}
                         rel="noopener"
                         target="_blank"
                         color="inherit"
@@ -173,7 +173,7 @@ export default function TopArticles() {
                       </Link>{" "}
                       <Link
                         underline="hover"
-                        // href={item.url} TODO Add Href
+                        href={`https://news.ycombinator.com/item?id=${item.id}`}
                         rel="noopener"
                         target="_blank"
                         color="inherit"
@@ -193,7 +193,15 @@ export default function TopArticles() {
                       variant="type2"
                       color="primary.light"
                     >
-                      {item.descendants} comments
+                      <Link
+                        underline="hover"
+                        href={`https://news.ycombinator.com/item?id=${item.id}`}
+                        rel="noopener"
+                        target="_blank"
+                        color="inherit"
+                      >
+                        {item.descendants} comments
+                      </Link>
                     </Typography>
                     <Divider
                       orientation="vertical"

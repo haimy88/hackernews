@@ -92,8 +92,8 @@ export default function TopArticles() {
   }, []);
 
   useEffect(() => {
-    console.log(displayedArticles);
-  }, [displayedArticles]);
+    console.log(starredArticles);
+  }, []);
 
   // useEffect(() => {
   //   console.log(starredArticles);
@@ -242,7 +242,8 @@ export default function TopArticles() {
                       variant="middle"
                       sx={dividerStyle}
                     />
-                    {starredArticles.includes(item) ? (
+                    {starredArticles.filter((article) => item.id === article.id)
+                      .length ? (
                       <IconButton
                         sx={{
                           p: 0,

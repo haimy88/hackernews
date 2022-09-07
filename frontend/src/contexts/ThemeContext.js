@@ -22,7 +22,7 @@ const lightTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Ubuntu Mono",
+    fontFamily: "ubuntu Mono",
     fontSize: "18px",
     type1: {
       fontFamily: "Open Sans",

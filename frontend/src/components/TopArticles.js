@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,19 +7,68 @@ import {
   ListItemText,
   Divider,
   IconButton,
+  Button,
+  CircularProgress,
+  Link,
 } from "@mui/material";
 import StarUnfilledLight from "../images/star_unfilled_light.svg";
 import StarUnfilledDark from "../images/star_unfilled_dark.svg";
+import axios from "axios";
 import { useThemeContext } from "../contexts/ThemeContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getArticleData } from "../features/DisplayedArticles";
+// import { Link } from "react-router-dom";
 
 export default function TopArticles() {
   const { currentTheme } = useThemeContext();
 
   const displayedArticles = useSelector((state) => state.articles.value);
+  let allArticlesApis = JSON.parse(localStorage.getItem("articleApis"));
+  const [isLoading, setIsLoading] = useState(false);
+
+  // const [displayedArticles, setDisplayedArticles] = useState([]);
+  const dispatch = useDispatch();
+
+  const getStories = async () => {
+    setIsLoading(true);
+    const response = await axios
+      .get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
+      .then(({ data }) => data);
+    allArticlesApis = response.map(
+      (id) =>
+        `https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`
+    );
+    localStorage.setItem("articleApis", JSON.stringify(allArticlesApis));
+    displayStories();
+  };
+
+  const displayStories = async () => {
+    setIsLoading(true);
+    const newStoriesApis = allArticlesApis.slice(
+      displayedArticles.length,
+      displayedArticles.length + 12
+    );
+    const stories = await axios.all(
+      newStoriesApis.map((endpoint) =>
+        axios.get(endpoint).then(({ data }) => data)
+      )
+    );
+    stories.map((article) => {
+      dispatch(getArticleData(article));
+    });
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    localStorage.clear();
+    getStories();
+  }, []);
 
   const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
+
+  useEffect(() => {
+    console.log("top articles rerendered");
+  });
 
   const dividerStyle = {
     height: "10px",
@@ -29,12 +78,24 @@ export default function TopArticles() {
     mr: 1,
   };
 
+  const ProgressBarInitialStyle = {
+    display: "flex",
+    justifyContent: "center",
+    mb: "10vh",
+  };
+
+  const ProgressBarShowMoreStyle = {
+    display: "flex",
+    justifyContent: "flex-start",
+    ml: "60px",
+    mb: "10vh",
+  };
+
   return (
     <>
       <List
         sx={{
           listStyleType: "num",
-          fontFamily: "helvetica",
           color: "primary.light",
           fontSize: "18px",
           mt: "40px",
@@ -46,26 +107,42 @@ export default function TopArticles() {
               display: "list-item",
               ml: "38px",
               mr: -20,
-              fontFamily: "ubuntu Mono",
             }}
           >
             <ListItemText
               sx={{ ml: "-15px" }}
               primary={
                 <React.Fragment>
-                  {item.title}
-                  <Typography
-                    sx={{
-                      display: "inline",
-                      pl: 1,
-                      fontWeight: 400,
-                    }}
-                    component="span"
-                    variant="type2"
-                    color="primary.light"
-                  >
-                    {item.url}
-                  </Typography>
+                  <Box sx={{ dislay: "flex" }}>
+                    <Link
+                      underline="hover"
+                      href={item.url}
+                      rel="noopener"
+                      target="_blank"
+                    >
+                      {item.title}
+                    </Link>
+                    <Typography
+                      sx={{
+                        display: "inline",
+                        pl: 1,
+                        fontWeight: 400,
+                      }}
+                      component="span"
+                      variant="type2"
+                      color="primary.light"
+                    >
+                      <Link
+                        underline="hover"
+                        // href={item.url} TODO Add Href
+                        rel="noopener"
+                        target="_blank"
+                      >
+                        {" "}
+                        {item.url}
+                      </Link>
+                    </Typography>
+                  </Box>
                 </React.Fragment>
               }
               primaryTypographyProps={{
@@ -132,6 +209,28 @@ export default function TopArticles() {
           </ListItem>
         ))}
       </List>
+      {!isLoading && (
+        <Button
+          variant="contained"
+          color="secondary"
+          disableElevation
+          onClick={displayStories}
+          sx={{ borderRadius: 0, color: "white", ml: "38px", mb: "60px" }}
+        >
+          Show More
+        </Button>
+      )}
+      {isLoading && (
+        <Box
+          sx={
+            displayedArticles.length
+              ? ProgressBarShowMoreStyle
+              : ProgressBarInitialStyle
+          }
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      )}
     </>
   );
 }

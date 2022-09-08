@@ -5,9 +5,11 @@ const {
   addArticle,
   deleteArticle,
   getStarredArticles,
+  sendStarredArticlesEmail,
 } = require("../controllers/starredController");
 
-router.post("/:id", addArticle);
+router.post("/email", sendStarredArticlesEmail);
+router.post("/add/:id", addArticle);
 router.get("/", getStarredArticles);
 router.delete("/:id", deleteArticle);
 

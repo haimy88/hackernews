@@ -23,7 +23,7 @@ export default function Navigation(props) {
   return (
     <Box>
       <List
-        disablePadding={true}
+        disablePadding
         sx={{ display: "flex", fontSize: 14, fontWeight: "bold" }}
       >
         <ListItem component={Link} to="/" disablePadding={true}>

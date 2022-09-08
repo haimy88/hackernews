@@ -5,19 +5,8 @@ import StarredArticles from "../components/StarredArticles";
 import { Box, Button } from "@mui/material";
 import axios from "axios";
 
-// import { useSelector, useDispatch } from "react-redux";
-// import { deleteArticleData } from "../features/DisplayedArticles";
-
 export default function Starred() {
   const starredActive = true;
-
-  // const displayedArticles = useSelector((state) => state.articles.value);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(deleteArticleData());
-  // }, []);
 
   return (
     <>

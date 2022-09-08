@@ -17,7 +17,6 @@ import StarFilled from "../images/star_filled.svg";
 import axios from "axios";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
-import { getArticleData } from "../features/DisplayedArticles";
 import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 
 export default function TopArticles() {
@@ -25,8 +24,6 @@ export default function TopArticles() {
   let allArticlesApis = JSON.parse(localStorage.getItem("articleApis"));
   const [isLoading, setIsLoading] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState([]);
-
-  // const displayedArticles = useSelector((state) => state.articles.value);
 
   const starredArticles = useSelector((state) => state.starred.value);
   const dispatch = useDispatch();
@@ -41,7 +38,6 @@ export default function TopArticles() {
         `https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`
     );
     localStorage.setItem("articleApis", JSON.stringify(allArticlesApis));
-    displayStories();
   };
 
   const displayStories = async () => {
@@ -55,50 +51,64 @@ export default function TopArticles() {
         axios.get(endpoint).then(({ data }) => data)
       )
     );
-    // stories.map((article) => {
-    //   dispatch(getArticleData(article));
-    // });
     stories.map((article) => {
       setDisplayedArticles((current) => [...current, article]);
     });
     setIsLoading(false);
   };
 
-  const addStar = (article) => {
+  const checkForStars = async () => {
+    try {
+      let star_ids = await axios.get(`http://localhost:8080`);
+      console.log(star_ids.data);
+      const stars = await axios.all(
+        star_ids.data.map((id) =>
+          axios
+            .get(
+              `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
+            )
+            .then(({ data }) => data)
+        )
+      );
+      console.log(stars);
+      stars.map((article) => dispatch(addArticle(article)));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addStar = async (article) => {
     dispatch(addArticle(article));
+    try {
+      let res = await axios.post(`http://localhost:8080/${article.id}`);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const deleteStar = (article) => {
+  const deleteStar = async (article) => {
     dispatch(deleteArticle(article));
+    try {
+      let res = await axios.delete(`http://localhost:8080/${article.id}`);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  // const updateStarredDisplay = () => {
-  //   let editedDisplayedArticles = [...displayedArticles.slice()];
-  //   editedDisplayedArticles.filter((article) => {
-  //     starredArticles.includes(article)
-  //       ? (article.starred = true)
-  //       : (article.starred = false);
-  //   });
-  //   setDisplayedArticles(editedDisplayedArticles);
-  // };
-
-  // const formatStar = (article) => {
-  //   starredArticles.includes(article) ? true : false;
-  // };
 
   useEffect(() => {
     localStorage.clear();
     getStories();
+    displayStories();
+    {
+      !starredArticles.length && checkForStars();
+    }
   }, []);
 
   useEffect(() => {
     console.log(starredArticles);
   }, []);
-
-  // useEffect(() => {
-  //   console.log(starredArticles);
-  //   updateStarredDisplay();
-  // }, [starredArticles]);
 
   const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
 

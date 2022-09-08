@@ -13,11 +13,22 @@ import { useThemeContext } from "../contexts/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { deleteArticle } from "../features/StarredArticlesManager";
+import axios from "axios";
 
 export default function StarredArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
 
   const dispatch = useDispatch();
+
+  const deleteStar = async (article) => {
+    dispatch(deleteArticle(article));
+    try {
+      let res = await axios.delete(`http://localhost:8080/${article.id}`);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const dividerStyle = {
     height: "10px",
@@ -146,7 +157,7 @@ export default function StarredArticles() {
                           p: 0,
                           mr: 0.2,
                         }}
-                        onClick={() => dispatch(deleteArticle(item))}
+                        onClick={() => deleteStar(item)}
                         disableRipple
                       >
                         <RemoveIcon

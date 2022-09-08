@@ -3,6 +3,7 @@ import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import StarredArticles from "../components/StarredArticles";
 import { Box, Button } from "@mui/material";
+import axios from "axios";
 
 // import { useSelector, useDispatch } from "react-redux";
 // import { deleteArticleData } from "../features/DisplayedArticles";
@@ -35,6 +36,7 @@ export default function Starred() {
             mb: "60px",
             mt: "18px",
           }}
+          onClick={() => axios.get("http://localhost:8080")}
         >
           Email Yourself The Articles
         </Button>

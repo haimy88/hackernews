@@ -1,5 +1,7 @@
 const { Star } = require("../data/schemas");
 const { transporter } = require("../config/nodemailer");
+const mailerhbs = require("nodemailer-express-handlebars");
+const path = require("path");
 
 const addArticle = async (req, res) => {
   try {
@@ -35,27 +37,27 @@ const getStarredArticles = async (req, res) => {
 };
 
 const sendStarredArticlesEmail = (req, res) => {
-  console.log(req.body);
-  let mailOptions = {
+  const handlebarOptions = {
+    viewEngine: {
+      extName: ".handlebars",
+      partialsDir: path.resolve("./src/views"),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve("./src/views"),
+    extName: ".handlebars",
+  };
+  const mailOptions = {
     from: "testhaimdev@outlook.com",
     to: `${req.body.email}`,
-    subject: "Your Favorite Articles",
-    text: `Here are your favorite articles!`,
-    // html: { path: `backend/src/views/StarredArticlesEmail.html` },
+    subject: "test subject",
+    template: "StarredArticlesEmail",
   };
-
   try {
-    transporter.sendMail(mailOptions, function (err, data) {
-      if (err) {
-        res.send(err);
-      } else {
-        console.log("email sent");
-      }
-    });
-
-    res.status(200);
+    transporter.use("compile", mailerhbs(handlebarOptions));
+    transporter.sendMail(mailOptions);
+    res.status(200).send("Email Sent");
   } catch (err) {
-    res.status(400).send("Error sending email with link");
+    res.status(400).send(err);
   }
 };
 

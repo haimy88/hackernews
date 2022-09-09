@@ -59,7 +59,7 @@ export default function TopArticles() {
 
   const checkForStars = async () => {
     try {
-      let star_ids = await axios.get(`http://localhost:8080`);
+      let star_ids = await axios.get(`http://localhost:8080/`);
       console.log(star_ids.data);
       const stars = await axios.all(
         star_ids.data.map((id) =>
@@ -80,8 +80,7 @@ export default function TopArticles() {
   const addStar = async (article) => {
     dispatch(addArticle(article));
     try {
-      let res = await axios.post(`http://localhost:8080/${article.id}`);
-      console.log(res);
+      let res = await axios.post(`http://localhost:8080/add/${article.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -110,7 +109,7 @@ export default function TopArticles() {
     console.log(starredArticles);
   }, []);
 
-  const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
+  // const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
 
   useEffect(() => {
     console.log("top articles rerendered");

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -10,6 +10,8 @@ import {
   IconButton,
   Button,
   TextField,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -18,6 +20,8 @@ import axios from "axios";
 
 export default function StarredArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
+  const [isLoading, setIsLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState("");
   const email = useRef("");
   const dispatch = useDispatch();
 
@@ -32,6 +36,7 @@ export default function StarredArticles() {
   };
 
   const emailTheArticles = async () => {
+    setIsLoading(true);
     try {
       const articlesToSend = {
         email: email.current.value,
@@ -42,9 +47,11 @@ export default function StarredArticles() {
         articlesToSend
       );
       console.log(res);
+      setEmailSent(res.data);
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   const dividerStyle = {
@@ -99,13 +106,15 @@ export default function StarredArticles() {
                           >
                             <Link
                               underline="hover"
-                              // href={item.url} TODO Add Href
+                              href={`https://news.ycombinator.com/from?site=${item.base_url}`}
                               rel="noopener"
                               target="_blank"
                               color="inherit"
                             >
                               {" "}
-                              {item.url}
+                              {"("}
+                              {item.base_url}
+                              {")"}
                             </Link>
                           </Typography>
                         </Box>
@@ -203,37 +212,48 @@ export default function StarredArticles() {
                 </ListItem>
               ))}
             </List>
+            {!isLoading && !emailSent && (
+              <Box>
+                <TextField
+                  inputRef={email}
+                  id="outlined-basic"
+                  label="Email"
+                  variant="outlined"
+                  sx={{ mb: 0.5, mt: 4 }}
+                  size="small"
+                  color="secondary"
+                />
+              </Box>
+            )}
             <Box>
-              <TextField
-                inputRef={email}
-                id="outlined-basic"
-                label="Email"
-                variant="outlined"
-                sx={{ mb: 0.5, mt: 4 }}
-                size="small"
-                color="secondary"
-              />
+              {!isLoading && !emailSent && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableElevation
+                  sx={{
+                    borderRadius: 0,
+                    color: "white",
+                    // mb: "50px",
+                    mt: "18px",
+                  }}
+                  onClick={() => emailTheArticles(email.current)}
+                >
+                  Email Yourself The Articles
+                </Button>
+              )}
+              {isLoading && <CircularProgress color="secondary" />}
             </Box>
-            <Box>
-              <Button
-                variant="contained"
-                color="secondary"
-                disableElevation
-                sx={{
-                  borderRadius: 0,
-                  color: "white",
-                  mb: "50px",
-                  mt: "18px",
-                }}
-                onClick={() => emailTheArticles(email.current)}
-              >
-                Email Yourself The Articles
-              </Button>
-            </Box>
+            {emailSent && (
+              <Alert severity="success" sx={{ width: "280px" }}>
+                {" "}
+                {emailSent}
+              </Alert>
+            )}
           </>
         ) : (
           <Box sx={{ dislay: "flex", justifyContent: "center" }}>
-            <Typography sx={{ mt: 4, mb: 4 }}>No articles saved</Typography>
+            <Typography sx={{ mt: 6 }}>No articles saved</Typography>
           </Box>
         )}
       </Box>

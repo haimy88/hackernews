@@ -13,6 +13,7 @@ const lightTheme = createTheme({
     primary: {
       main: "#000000",
       light: "rgba(0, 0, 0, 0.5)",
+      success: "#2e7d32",
     },
     secondary: {
       main: "#FE7139",

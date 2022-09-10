@@ -29,7 +29,6 @@ const deleteArticle = async (req, res) => {
 const getStarredArticles = async (req, res) => {
   try {
     let articles = await Star.find({ user_ip: req.ip });
-    console.log(articles);
     res.status(200).send(articles);
   } catch (err) {
     res.status(400).send(err);
@@ -37,6 +36,7 @@ const getStarredArticles = async (req, res) => {
 };
 
 const sendStarredArticlesEmail = (req, res) => {
+  console.log(req.body);
   const handlebarOptions = {
     viewEngine: {
       extName: ".handlebars",
@@ -54,13 +54,20 @@ const sendStarredArticlesEmail = (req, res) => {
     context: {
       articles: req.body.articles,
     },
+    attachments: [
+      {
+        filename: "logo.svg",
+        path: "./src/images/logo.svg",
+        cid: "logo",
+      },
+    ],
   };
   try {
     transporter.use("compile", mailerhbs(handlebarOptions));
     transporter.sendMail(mailOptions);
     res.status(200).send("Email Sent");
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send("Error has occurred");
   }
 };
 

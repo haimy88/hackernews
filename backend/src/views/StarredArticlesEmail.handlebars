@@ -10,13 +10,13 @@
     <title>Document</title>
   </head>
   <body style="background-color:#FFFFFF">
-    <img src="../images/logo.svg"><h2 style="color:#FE7039;font-family:'open sans'">Your Favorites from Hacker News</h2>
+    <img src="cid:logo"><h2 style="color:#FE7039;font-family:'open sans'">Your Favorites from Hacker News</h2>
     <ul style="list-style:none">
       {{#each articles}}
       <li style="font-family: 'Ubuntu Mono', monospace;margin-bottom: 1.2rem">
         <div>
           <a href={{this.url}} style="text-decoration:none;font-size:18px;color:#000000"><span>{{this.title}}</span></a>
-          <a href={{this.url}} style="text-decoration:none;color:#00000080;fontsize:10px"><span>{{this.url}}</span></a>
+          <a href="https://news.ycombinator.com/from?site={{this.base_url}}" style="text-decoration:none;color:#00000080;fontsize:10px"><span>({{this.base_url}})</span></a>
         </div>
         <div style="color:#00000080;fontsize:10px;display:flex;height:16px">
           <span>{{this.score}} points by <a href="https://news.ycombinator.com/user?id={{this.by}}" style="text-decoration:none;color:#00000080">{{this.by}}</a></span>

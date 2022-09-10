@@ -14,7 +14,9 @@ export default function Starred() {
       <Box sx={{ ml: "90px", mr: "90px" }}>
         <Banner starredActive={starredActive} />
         <StarredArticles />
-        <Box sx={{ height: "4px", bgcolor: "secondary.main" }}></Box>
+        <Box
+          sx={{ height: "4px", bgcolor: "secondary.main", mt: "50px" }}
+        ></Box>
         <Footer />
       </Box>
     </>

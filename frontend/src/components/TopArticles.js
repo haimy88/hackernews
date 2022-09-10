@@ -28,6 +28,27 @@ export default function TopArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
   const dispatch = useDispatch();
 
+  const getBaseURL = (url) => {
+    if (!url) {
+      return;
+    }
+    const path_array = url.split("/");
+    let base_url = path_array[2];
+    {
+      (base_url === "github.com" || base_url === "twitter.com") &&
+        (base_url = base_url.concat("/", path_array[3]));
+    }
+    const base_url_array = base_url.split(".");
+    {
+      (base_url_array[0] === "www" ||
+        base_url_array[0] === "courses" ||
+        base_url_array[0] === "en") &&
+        base_url_array.shift();
+    }
+    base_url = base_url_array.join(".");
+    return base_url;
+  };
+
   const getStories = async () => {
     setIsLoading(true);
     const response = await axios
@@ -52,6 +73,8 @@ export default function TopArticles() {
       )
     );
     stories.map((article) => {
+      const base_url = getBaseURL(article.url);
+      article.base_url = base_url;
       setDisplayedArticles((current) => [...current, article]);
     });
     setIsLoading(false);
@@ -69,7 +92,10 @@ export default function TopArticles() {
             .then(({ data }) => data)
         )
       );
-      stars.map((article) => dispatch(addArticle(article)));
+      stars.map((article) => {
+        getBaseURL(article.url);
+        dispatch(addArticle(article));
+      });
     } catch (err) {
       console.log(err);
     }
@@ -106,8 +132,6 @@ export default function TopArticles() {
   useEffect(() => {
     console.log(starredArticles);
   }, []);
-
-  // const sourceRegex = new RegExp("([a-zA-Z]+(.[a-zA-Z]+)+)");
 
   useEffect(() => {
     console.log("top articles rerendered");
@@ -175,16 +199,20 @@ export default function TopArticles() {
                       variant="type2"
                       color="primary.light"
                     >
-                      <Link
-                        underline="hover"
-                        // href={item.url} TODO Add Href
-                        rel="noopener"
-                        target="_blank"
-                        color="inherit"
-                      >
-                        {" "}
-                        {item.url}
-                      </Link>
+                      {item.base_url && (
+                        <Link
+                          underline="hover"
+                          href={`https://news.ycombinator.com/from?site=${item.base_url}`}
+                          rel="noopener"
+                          target="_blank"
+                          color="inherit"
+                        >
+                          {" "}
+                          {"("}
+                          {item.base_url}
+                          {")"}
+                        </Link>
+                      )}
                     </Typography>
                   </Box>
                 </React.Fragment>

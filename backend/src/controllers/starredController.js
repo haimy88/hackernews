@@ -47,10 +47,13 @@ const sendStarredArticlesEmail = (req, res) => {
     extName: ".handlebars",
   };
   const mailOptions = {
-    from: "testhaimdev@outlook.com",
+    from: "jmhdevtest@outlook.com",
     to: `${req.body.email}`,
     subject: "test subject",
     template: "StarredArticlesEmail",
+    context: {
+      articles: req.body.articles,
+    },
   };
   try {
     transporter.use("compile", mailerhbs(handlebarOptions));

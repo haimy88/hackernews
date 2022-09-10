@@ -4,12 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
     <title>Document</title>
   </head>
-  <body>
-    <img src ={'https://images.dog.ceo/breeds/mastiff-english/2.jpg'}>
-    <div style ="color:blue">Hi</div>
-    <button type="button" class="btn btn-primary">Primary</button>
+  <body style="background-color:#FFFFFF">
+    <img src="../images/logo.svg"><h2 style="color:#FE7039;font-family:'open sans'">Your Favorites from Hacker News</h2>
+    <ul style="list-style:none">
+      {{#each articles}}
+      <li style="font-family: 'Ubuntu Mono', monospace;margin-bottom: 1.2rem">
+        <div>
+          <a href={{this.url}} style="text-decoration:none;font-size:18px;color:#000000"><span>{{this.title}}</span></a>
+          <a href={{this.url}} style="text-decoration:none;color:#00000080;fontsize:10px"><span>{{this.url}}</span></a>
+        </div>
+        <div style="color:#00000080;fontsize:10px;display:flex;height:16px">
+          <span>{{this.score}} points by <a href="https://news.ycombinator.com/user?id={{this.by}}" style="text-decoration:none;color:#00000080">{{this.by}}</a></span>
+          <div style="border-left:solid;border-left-width:1px;margin-left:0.5rem;margin-right:0.5rem;margin-top:5px"></div>
+          <a href="https://news.ycombinator.com/item?id={{this.id}}`" style="text-decoration:none;color:#00000080"><span>{{this.descendants}} comments</span></a>
+        </div>
+        </li>
+      {{/each}}
+    </ul>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </body>
 </html>

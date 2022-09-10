@@ -60,7 +60,6 @@ export default function TopArticles() {
   const checkForStars = async () => {
     try {
       let star_ids = await axios.get(`http://localhost:8080/`);
-      console.log(star_ids.data);
       const stars = await axios.all(
         star_ids.data.map((id) =>
           axios
@@ -70,7 +69,6 @@ export default function TopArticles() {
             .then(({ data }) => data)
         )
       );
-      console.log(stars);
       stars.map((article) => dispatch(addArticle(article)));
     } catch (err) {
       console.log(err);

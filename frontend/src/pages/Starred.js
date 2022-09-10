@@ -14,21 +14,6 @@ export default function Starred() {
       <Box sx={{ ml: "90px", mr: "90px" }}>
         <Banner starredActive={starredActive} />
         <StarredArticles />
-        <Button
-          variant="contained"
-          color="secondary"
-          disableElevation
-          sx={{
-            borderRadius: 0,
-            color: "white",
-            ml: "38px",
-            mb: "60px",
-            mt: "18px",
-          }}
-          onClick={() => axios.get("http://localhost:8080")}
-        >
-          Email Yourself The Articles
-        </Button>
         <Box sx={{ height: "4px", bgcolor: "secondary.main" }}></Box>
         <Footer />
       </Box>

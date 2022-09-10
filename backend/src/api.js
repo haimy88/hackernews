@@ -18,6 +18,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(express.static("/images"));
+
 app.use("/", starredRoutes);
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));

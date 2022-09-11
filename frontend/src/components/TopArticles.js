@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Link,
 } from "@mui/material";
+import { useArticleContext } from "../contexts/ArticleContext";
 import StarUnfilledLight from "../images/star_unfilled_light.svg";
 import StarUnfilledDark from "../images/star_unfilled_dark.svg";
 import StarFilled from "../images/star_filled.svg";
@@ -25,29 +26,10 @@ export default function TopArticles() {
   const [isLoading, setIsLoading] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState([]);
 
+  const { getBaseURL, checkForStars } = useArticleContext();
+
   const starredArticles = useSelector((state) => state.starred.value);
   const dispatch = useDispatch();
-
-  const getBaseURL = (url) => {
-    if (!url) {
-      return;
-    }
-    const path_array = url.split("/");
-    let base_url = path_array[2];
-    {
-      (base_url === "github.com" || base_url === "twitter.com") &&
-        (base_url = base_url.concat("/", path_array[3]));
-    }
-    const base_url_array = base_url.split(".");
-    {
-      (base_url_array[0] === "www" ||
-        base_url_array[0] === "courses" ||
-        base_url_array[0] === "en") &&
-        base_url_array.shift();
-    }
-    base_url = base_url_array.join(".");
-    return base_url;
-  };
 
   const getStories = async () => {
     setIsLoading(true);
@@ -80,28 +62,6 @@ export default function TopArticles() {
     setIsLoading(false);
   };
 
-  const checkForStars = async () => {
-    try {
-      let star_ids = await axios.get(`http://localhost:8080/`);
-      const stars = await axios.all(
-        star_ids.data.map((id) =>
-          axios
-            .get(
-              `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
-            )
-            .then(({ data }) => data)
-        )
-      );
-      stars.map((article) => {
-        const base_url = getBaseURL(article.url);
-        article.base_url = base_url;
-        dispatch(addArticle(article));
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const addStar = async (article) => {
     dispatch(addArticle(article));
     try {
@@ -115,7 +75,6 @@ export default function TopArticles() {
     dispatch(deleteArticle(article));
     try {
       let res = await axios.delete(`http://localhost:8080/${article.id}`);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -125,14 +84,17 @@ export default function TopArticles() {
     localStorage.clear();
     getStories();
     displayStories();
-    {
-      !starredArticles.length && checkForStars();
+    const getStarredArticles = async () => {
+      let saved_articles = await checkForStars();
+      console.log(saved_articles);
+      saved_articles.map((article) => {
+        dispatch(addArticle(article));
+      });
+    };
+    if (!starredArticles.length) {
+      getStarredArticles();
     }
   }, []);
-
-  useEffect(() => {
-    console.log(starredArticles);
-  }, [starredArticles]);
 
   useEffect(() => {
     console.log("top articles rerendered");

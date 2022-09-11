@@ -14,6 +14,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
+import { useArticleContext } from "../contexts/ArticleContext";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 import axios from "axios";
@@ -26,51 +27,32 @@ export default function StarredArticles() {
   const email = useRef("");
   const dispatch = useDispatch();
 
-  const getBaseURL = (url) => {
-    if (!url) {
-      return;
-    }
-    const path_array = url.split("/");
-    let base_url = path_array[2];
-    {
-      (base_url === "github.com" || base_url === "twitter.com") &&
-        (base_url = base_url.concat("/", path_array[3]));
-    }
-    const base_url_array = base_url.split(".");
-    {
-      (base_url_array[0] === "www" ||
-        base_url_array[0] === "courses" ||
-        base_url_array[0] === "en") &&
-        base_url_array.shift();
-    }
-    base_url = base_url_array.join(".");
-    return base_url;
-  };
+  const { checkForStars } = useArticleContext();
 
-  const checkForStars = async () => {
-    setIsLoading(true);
-    try {
-      let star_ids = await axios.get(`http://localhost:8080/`);
-      star_ids.data.length === 0 && setIsLoading(false);
-      const stars = await axios.all(
-        star_ids.data.map((id) =>
-          axios
-            .get(
-              `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
-            )
-            .then(({ data }) => data)
-        )
-      );
-      stars.map((article) => {
-        const base_url = getBaseURL(article.url);
-        article.base_url = base_url;
-        dispatch(addArticle(article));
-      });
-    } catch (err) {
-      console.log(err);
-    }
-    setIsLoading(false);
-  };
+  // const checkForStars = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     let star_ids = await axios.get(`http://localhost:8080/`);
+  //     star_ids.data.length === 0 && setIsLoading(false);
+  //     const stars = await axios.all(
+  //       star_ids.data.map((id) =>
+  //         axios
+  //           .get(
+  //             `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
+  //           )
+  //           .then(({ data }) => data)
+  //       )
+  //     );
+  //     stars.map((article) => {
+  //       const base_url = getBaseURL(article.url);
+  //       article.base_url = base_url;
+  //       dispatch(addArticle(article));
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   setIsLoading(false);
+  // };
 
   const deleteStar = async (article) => {
     dispatch(deleteArticle(article));
@@ -102,10 +84,25 @@ export default function StarredArticles() {
   };
 
   useEffect(() => {
-    {
-      !starredArticles.length && checkForStars();
+    const getStarredArticles = async () => {
+      setIsLoading(true);
+      let saved_articles = await checkForStars();
+      console.log(saved_articles);
+      saved_articles.map((article) => {
+        dispatch(addArticle(article));
+      });
+      setIsLoading(false);
+    };
+    if (!starredArticles.length) {
+      getStarredArticles();
     }
   }, []);
+
+  // useEffect(() => {
+  //   {
+  //     !starredArticles.length && checkForStars();
+  //   }
+  // }, []);
 
   const dividerStyle = {
     height: "10px",
@@ -328,7 +325,7 @@ export default function StarredArticles() {
             <CircularProgress
               size="60px"
               color="secondary"
-              sx={{ ml: "-35px" }}
+              sx={{ ml: "-35px", mt: 6 }}
             />
           </Box>
         ) : (

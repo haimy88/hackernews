@@ -36,7 +36,6 @@ const getStarredArticles = async (req, res) => {
 };
 
 const sendStarredArticlesEmail = (req, res) => {
-  console.log(req.body);
   const handlebarOptions = {
     viewEngine: {
       extName: ".handlebars",
@@ -47,7 +46,7 @@ const sendStarredArticlesEmail = (req, res) => {
     extName: ".handlebars",
   };
   const mailOptions = {
-    from: "jmhdevtest@outlook.com",
+    from: "jmhdevtesting@outlook.com",
     to: `${req.body.email}`,
     subject: "test subject",
     template: "StarredArticlesEmail",
@@ -56,8 +55,8 @@ const sendStarredArticlesEmail = (req, res) => {
     },
     attachments: [
       {
-        filename: "logo.svg",
-        path: "./src/images/logo.svg",
+        filename: "logo.png",
+        path: "./src/images/logo.png",
         cid: "logo",
       },
     ],

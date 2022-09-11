@@ -10,7 +10,12 @@
     <title>Document</title>
   </head>
   <body style="background-color:#FFFFFF">
-    <img src="cid:logo"><h2 style="color:#FE7039;font-family:'open sans'">Your Favorites from Hacker News</h2>
+    <div style="display:flex;align-items:center">
+      <div style="margin-top:auto;margin-bottom:auto">
+        <img src="cid:logo" style="max-width:100%;max-height:33px;height:auto;margin-right:12px">
+      </div>
+      <h2 style="color:#FE7039;font-family:'open sans'">Your Favorites from Hacker News</h2>
+    </div>
     <ul style="list-style:none">
       {{#each articles}}
       <li style="font-family: 'Ubuntu Mono', monospace;margin-bottom: 1.2rem">

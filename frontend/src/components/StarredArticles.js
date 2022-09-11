@@ -22,6 +22,7 @@ export default function StarredArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState("");
+  const [error, setError] = useState("");
   const email = useRef("");
   const dispatch = useDispatch();
 
@@ -49,7 +50,7 @@ export default function StarredArticles() {
       console.log(res);
       setEmailSent(res.data);
     } catch (error) {
-      console.log(error);
+      setError(error.response.data);
     }
     setIsLoading(false);
   };
@@ -77,7 +78,6 @@ export default function StarredArticles() {
               {starredArticles.map((item) => (
                 <ListItem
                   sx={{
-                    // ml: "38px",
                     mr: -20,
                   }}
                 >
@@ -212,44 +212,59 @@ export default function StarredArticles() {
                 </ListItem>
               ))}
             </List>
-            {!isLoading && !emailSent && (
-              <Box>
-                <TextField
-                  inputRef={email}
-                  id="outlined-basic"
-                  label="Email"
-                  variant="outlined"
-                  sx={{ mb: 0.5, mt: 4 }}
-                  size="small"
-                  color="secondary"
-                />
-              </Box>
-            )}
-            <Box>
+            <Box
+              sx={{
+                height: "150px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               {!isLoading && !emailSent && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableElevation
-                  sx={{
-                    borderRadius: 0,
-                    color: "white",
-                    // mb: "50px",
-                    mt: "18px",
-                  }}
-                  onClick={() => emailTheArticles(email.current)}
-                >
-                  Email Yourself The Articles
-                </Button>
+                <>
+                  <Box display="flex" sx={{ alignItems: "center" }}>
+                    <TextField
+                      inputRef={email}
+                      id="outlined-basic"
+                      label="Email"
+                      variant="outlined"
+                      size="small"
+                      color="secondary"
+                    />
+                    {error && (
+                      <Alert severity="error" sx={{ ml: 2 }}>
+                        {" "}
+                        {error}
+                      </Alert>
+                    )}
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disableElevation
+                      sx={{
+                        borderRadius: 0,
+                        color: "white",
+                        mt: "20px",
+                      }}
+                      onClick={() => emailTheArticles(email.current)}
+                    >
+                      Email Yourself The Articles
+                    </Button>
+                  </Box>
+                </>
               )}
-              {isLoading && <CircularProgress color="secondary" />}
+              {isLoading && (
+                <CircularProgress color="secondary" sx={{ ml: 7, mt: 1 }} />
+              )}
+              {emailSent && (
+                <Alert severity="success" sx={{ width: "280px" }}>
+                  {" "}
+                  {emailSent}
+                </Alert>
+              )}
             </Box>
-            {emailSent && (
-              <Alert severity="success" sx={{ width: "280px" }}>
-                {" "}
-                {emailSent}
-              </Alert>
-            )}
           </>
         ) : (
           <Box sx={{ dislay: "flex", justifyContent: "center" }}>

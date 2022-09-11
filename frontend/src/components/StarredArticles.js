@@ -48,8 +48,10 @@ export default function StarredArticles() {
   };
 
   const checkForStars = async () => {
+    setIsLoading(true);
     try {
       let star_ids = await axios.get(`http://localhost:8080/`);
+      star_ids.data.length === 0 && setIsLoading(false);
       const stars = await axios.all(
         star_ids.data.map((id) =>
           axios
@@ -67,6 +69,7 @@ export default function StarredArticles() {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   const deleteStar = async (article) => {
@@ -316,10 +319,6 @@ export default function StarredArticles() {
             </Box>
           </>
         ) : isLoading ? (
-          <Box sx={{ dislay: "flex", justifyContent: "center" }}>
-            <Typography sx={{ mt: 6 }}>No articles saved</Typography>
-          </Box>
-        ) : (
           <Box
             sx={{
               display: "flex",
@@ -331,6 +330,10 @@ export default function StarredArticles() {
               color="secondary"
               sx={{ ml: "-35px" }}
             />
+          </Box>
+        ) : (
+          <Box sx={{ dislay: "flex", justifyContent: "center" }}>
+            <Typography sx={{ mt: 6 }}>No articles saved</Typography>
           </Box>
         )}
       </Box>

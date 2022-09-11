@@ -344,7 +344,7 @@ export default function TopArticles() {
               : ProgressBarInitialStyle
           }
         >
-          <CircularProgress color="secondary" />
+          <CircularProgress size="60px" color="secondary" />
         </Box>
       )}
     </>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { deleteArticle } from "../features/StarredArticlesManager";
+import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 import axios from "axios";
 
 export default function StarredArticles() {
@@ -25,6 +25,49 @@ export default function StarredArticles() {
   const [error, setError] = useState("");
   const email = useRef("");
   const dispatch = useDispatch();
+
+  const getBaseURL = (url) => {
+    if (!url) {
+      return;
+    }
+    const path_array = url.split("/");
+    let base_url = path_array[2];
+    {
+      (base_url === "github.com" || base_url === "twitter.com") &&
+        (base_url = base_url.concat("/", path_array[3]));
+    }
+    const base_url_array = base_url.split(".");
+    {
+      (base_url_array[0] === "www" ||
+        base_url_array[0] === "courses" ||
+        base_url_array[0] === "en") &&
+        base_url_array.shift();
+    }
+    base_url = base_url_array.join(".");
+    return base_url;
+  };
+
+  const checkForStars = async () => {
+    try {
+      let star_ids = await axios.get(`http://localhost:8080/`);
+      const stars = await axios.all(
+        star_ids.data.map((id) =>
+          axios
+            .get(
+              `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
+            )
+            .then(({ data }) => data)
+        )
+      );
+      stars.map((article) => {
+        const base_url = getBaseURL(article.url);
+        article.base_url = base_url;
+        dispatch(addArticle(article));
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const deleteStar = async (article) => {
     dispatch(deleteArticle(article));
@@ -54,6 +97,12 @@ export default function StarredArticles() {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    {
+      !starredArticles.length && checkForStars();
+    }
+  }, []);
 
   const dividerStyle = {
     height: "10px",
@@ -266,9 +315,22 @@ export default function StarredArticles() {
               )}
             </Box>
           </>
-        ) : (
+        ) : isLoading ? (
           <Box sx={{ dislay: "flex", justifyContent: "center" }}>
             <Typography sx={{ mt: 6 }}>No articles saved</Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress
+              size="60px"
+              color="secondary"
+              sx={{ ml: "-35px" }}
+            />
           </Box>
         )}
       </Box>

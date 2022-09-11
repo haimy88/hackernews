@@ -93,7 +93,8 @@ export default function TopArticles() {
         )
       );
       stars.map((article) => {
-        getBaseURL(article.url);
+        const base_url = getBaseURL(article.url);
+        article.base_url = base_url;
         dispatch(addArticle(article));
       });
     } catch (err) {
@@ -131,7 +132,7 @@ export default function TopArticles() {
 
   useEffect(() => {
     console.log(starredArticles);
-  }, []);
+  }, [starredArticles]);
 
   useEffect(() => {
     console.log("top articles rerendered");

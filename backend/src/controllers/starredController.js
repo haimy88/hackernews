@@ -12,7 +12,7 @@ const addArticle = async (req, res) => {
     newStar.save();
     res.status(200).send("article saved successfully");
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send("request failed");
   }
 };
 
@@ -22,7 +22,7 @@ const deleteArticle = async (req, res) => {
     await star[0].remove();
     res.status(200).send("article removed from favorites");
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send("request failed");
   }
 };
 
@@ -31,7 +31,7 @@ const getStarredArticles = async (req, res) => {
     let articles = await Star.find({ user_ip: req.ip });
     res.status(200).send(articles);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send("Unable to retrieve the articles");
   }
 };
 

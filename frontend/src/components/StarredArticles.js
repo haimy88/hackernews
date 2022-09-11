@@ -24,43 +24,21 @@ export default function StarredArticles() {
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState("");
   const [error, setError] = useState("");
+  const [requestErrorId, setRequestErrorId] = useState("");
+  const [requestErrorMessage, setRequestErrorMessage] = useState("");
+  const [loadError, setLoadError] = useState("");
   const email = useRef("");
   const dispatch = useDispatch();
 
   const { checkForStars } = useArticleContext();
 
-  // const checkForStars = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     let star_ids = await axios.get(`http://localhost:8080/`);
-  //     star_ids.data.length === 0 && setIsLoading(false);
-  //     const stars = await axios.all(
-  //       star_ids.data.map((id) =>
-  //         axios
-  //           .get(
-  //             `https://hacker-news.firebaseio.com/v0/item/${id.article_id}.json?print=pretty`
-  //           )
-  //           .then(({ data }) => data)
-  //       )
-  //     );
-  //     stars.map((article) => {
-  //       const base_url = getBaseURL(article.url);
-  //       article.base_url = base_url;
-  //       dispatch(addArticle(article));
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   setIsLoading(false);
-  // };
-
   const deleteStar = async (article) => {
-    dispatch(deleteArticle(article));
     try {
-      let res = await axios.delete(`http://localhost:8080/${article.id}`);
-      console.log(res);
+      await axios.delete(`http://localhost:8080/${article.id}`);
+      dispatch(deleteArticle(article));
     } catch (error) {
-      console.log(error);
+      setRequestErrorId(article.id);
+      setRequestErrorMessage(error.response.data);
     }
   };
 
@@ -75,7 +53,6 @@ export default function StarredArticles() {
         `http://localhost:8080/email/`,
         articlesToSend
       );
-      console.log(res);
       setEmailSent(res.data);
     } catch (error) {
       setError(error.response.data);
@@ -86,23 +63,20 @@ export default function StarredArticles() {
   useEffect(() => {
     const getStarredArticles = async () => {
       setIsLoading(true);
-      let saved_articles = await checkForStars();
-      console.log(saved_articles);
-      saved_articles.map((article) => {
-        dispatch(addArticle(article));
-      });
+      try {
+        let saved_articles = await checkForStars();
+        saved_articles.map((article) => {
+          dispatch(addArticle(article));
+        });
+      } catch (error) {
+        setLoadError("Unable to load Articles");
+      }
       setIsLoading(false);
     };
     if (!starredArticles.length) {
       getStarredArticles();
     }
   }, []);
-
-  // useEffect(() => {
-  //   {
-  //     !starredArticles.length && checkForStars();
-  //   }
-  // }, []);
 
   const dividerStyle = {
     height: "10px",
@@ -115,6 +89,11 @@ export default function StarredArticles() {
   return (
     <>
       <Box sx={{ ml: "38px", display: "flex", flexDirection: "column" }}>
+        {loadError && (
+          <Alert severity="error" sx={{ mt: 10 }}>
+            {loadError}
+          </Alert>
+        )}
         {starredArticles.length ? (
           <>
             <List
@@ -254,6 +233,22 @@ export default function StarredArticles() {
                           >
                             remove
                           </Typography>
+                          {requestErrorId === item.id && (
+                            <Alert
+                              severity="error"
+                              sx={{
+                                fontSize: "11px",
+                                ml: 2,
+                                mb: 1,
+                                height: "36px",
+                                pt: 0,
+                                pb: 0,
+                              }}
+                            >
+                              {requestErrorMessage ||
+                                "unable to process request"}
+                            </Alert>
+                          )}
                         </Box>
                       </React.Fragment>
                     }
@@ -329,9 +324,11 @@ export default function StarredArticles() {
             />
           </Box>
         ) : (
-          <Box sx={{ dislay: "flex", justifyContent: "center" }}>
-            <Typography sx={{ mt: 6 }}>No articles saved</Typography>
-          </Box>
+          !loadError && (
+            <Box sx={{ dislay: "flex", justifyContent: "center" }}>
+              <Typography sx={{ mt: 6 }}>No articles saved</Typography>
+            </Box>
+          )
         )}
       </Box>
     </>

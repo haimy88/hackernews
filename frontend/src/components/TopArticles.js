@@ -10,6 +10,7 @@ import {
   Button,
   CircularProgress,
   Link,
+  Alert,
 } from "@mui/material";
 import { useArticleContext } from "../contexts/ArticleContext";
 import StarUnfilledLight from "../images/star_unfilled_light.svg";
@@ -25,6 +26,9 @@ export default function TopArticles() {
   let allArticlesApis = JSON.parse(localStorage.getItem("articleApis"));
   const [isLoading, setIsLoading] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState([]);
+  const [requestErrorId, setRequestErrorId] = useState("");
+  const [requestErrorMessage, setRequestErrorMessage] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   const { getBaseURL, checkForStars } = useArticleContext();
 
@@ -49,36 +53,42 @@ export default function TopArticles() {
       displayedArticles.length,
       displayedArticles.length + 12
     );
-    const stories = await axios.all(
-      newStoriesApis.map((endpoint) =>
-        axios.get(endpoint).then(({ data }) => data)
-      )
-    );
-    stories.map((article) => {
-      const base_url = getBaseURL(article.url);
-      article.base_url = base_url;
-      setDisplayedArticles((current) => [...current, article]);
-    });
+    try {
+      const stories = await axios.all(
+        newStoriesApis.map((endpoint) =>
+          axios.get(endpoint).then(({ data }) => data)
+        )
+      );
+      stories.map((article) => {
+        const base_url = getBaseURL(article.url);
+        article.base_url = base_url;
+        setDisplayedArticles((current) => [...current, article]);
+      });
+    } catch (err) {
+      setLoadError("Unable to load Articles");
+    }
     setIsLoading(false);
   };
 
   const addStar = async (article) => {
     const base_url = getBaseURL(article.url);
     article.base_url = base_url;
-    dispatch(addArticle(article));
     try {
       let res = await axios.post(`http://localhost:8080/add/${article.id}`);
+      dispatch(addArticle(article));
     } catch (error) {
-      console.log(error);
+      setRequestErrorId(article.id);
+      setRequestErrorMessage(error.response.data);
     }
   };
 
   const deleteStar = async (article) => {
-    dispatch(deleteArticle(article));
     try {
-      let res = await axios.delete(`http://localhost:8080/${article.id}`);
+      await axios.delete(`http://localhost:8080/${article.id}`);
+      dispatch(deleteArticle(article));
     } catch (error) {
-      console.log(error);
+      setRequestErrorId(article.id);
+      setRequestErrorMessage(error.response.data);
     }
   };
 
@@ -282,6 +292,23 @@ export default function TopArticles() {
                         ? "saved"
                         : "save"}
                     </Typography>
+                    <Box>
+                      {requestErrorId === item.id && (
+                        <Alert
+                          severity="error"
+                          sx={{
+                            fontSize: "11px",
+                            ml: 2,
+                            mb: 1,
+                            height: "36px",
+                            pt: 0,
+                            pb: 0,
+                          }}
+                        >
+                          {requestErrorMessage || "unable to process request"}
+                        </Alert>
+                      )}
+                    </Box>
                   </Box>
                 </React.Fragment>
               }
@@ -289,7 +316,12 @@ export default function TopArticles() {
           </ListItem>
         ))}
       </List>
-      {!isLoading && (
+      {loadError && (
+        <Alert severity="error" sx={{ mb: 5 }}>
+          {loadError}
+        </Alert>
+      )}
+      {!isLoading && displayedArticles.length > 0 && (
         <Button
           variant="contained"
           color="secondary"

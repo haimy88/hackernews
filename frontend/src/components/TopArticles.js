@@ -63,6 +63,8 @@ export default function TopArticles() {
   };
 
   const addStar = async (article) => {
+    const base_url = getBaseURL(article.url);
+    article.base_url = base_url;
     dispatch(addArticle(article));
     try {
       let res = await axios.post(`http://localhost:8080/add/${article.id}`);

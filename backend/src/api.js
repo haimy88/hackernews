@@ -6,12 +6,16 @@ const mongoose = require("mongoose");
 const starredRoutes = require("./routes/starredRoutes");
 require("dotenv").config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  process.env.MONGO_URI ||
+    "mongodb+srv://haimy88:testing123@cluster0.htuniwl.mongodb.net/starredDB",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 app.use(express.json());
 app.use(cors());

@@ -24,8 +24,8 @@ import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 export default function TopArticles() {
   const { currentTheme } = useThemeContext();
   let allArticlesApis = JSON.parse(localStorage.getItem("articleApis"));
-  const [isLoading, setIsLoading] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [requestErrorId, setRequestErrorId] = useState("");
   const [requestErrorMessage, setRequestErrorMessage] = useState("");
   const [loadError, setLoadError] = useState("");
@@ -98,7 +98,6 @@ export default function TopArticles() {
     displayStories();
     const getStarredArticles = async () => {
       let saved_articles = await checkForStars();
-      console.log(saved_articles);
       saved_articles.map((article) => {
         dispatch(addArticle(article));
       });
@@ -130,7 +129,7 @@ export default function TopArticles() {
     display: "flex",
     justifyContent: "flex-start",
     ml: "60px",
-    mb: "10vh",
+    mb: "5vh",
   };
 
   return (
@@ -145,6 +144,7 @@ export default function TopArticles() {
       >
         {displayedArticles.map((item) => (
           <ListItem
+            key={item.id}
             sx={{
               display: "list-item",
               ml: "38px",
@@ -261,7 +261,11 @@ export default function TopArticles() {
                         }}
                         onClick={() => deleteStar(item)}
                       >
-                        <img className="star" src={StarFilled} />
+                        <img
+                          className="star"
+                          src={StarFilled}
+                          alt="star (filled)"
+                        />
                       </IconButton>
                     ) : (
                       <IconButton
@@ -273,6 +277,7 @@ export default function TopArticles() {
                       >
                         <img
                           className="star"
+                          alt="star (outlined)"
                           src={
                             currentTheme === "light"
                               ? StarUnfilledLight

@@ -94,7 +94,7 @@ export default function StarredArticles() {
             {loadError}
           </Alert>
         )}
-        {starredArticles.length ? (
+        {starredArticles.length > 0 && (
           <>
             <List
               sx={{
@@ -105,6 +105,7 @@ export default function StarredArticles() {
             >
               {starredArticles.map((item) => (
                 <ListItem
+                  key={item.id}
                   sx={{
                     mr: -20,
                   }}
@@ -310,7 +311,8 @@ export default function StarredArticles() {
               )}
             </Box>
           </>
-        ) : isLoading ? (
+        )}
+        {isLoading && (
           <Box
             sx={{
               display: "flex",
@@ -323,12 +325,11 @@ export default function StarredArticles() {
               sx={{ ml: "-35px", mt: 6 }}
             />
           </Box>
-        ) : (
-          !loadError && (
-            <Box sx={{ dislay: "flex", justifyContent: "center" }}>
-              <Typography sx={{ mt: 6 }}>No articles saved</Typography>
-            </Box>
-          )
+        )}
+        {!loadError && !isLoading && !starredArticles.length && (
+          <Box sx={{ dislay: "flex", justifyContent: "center" }}>
+            <Typography sx={{ mt: 6 }}>No articles saved</Typography>
+          </Box>
         )}
       </Box>
     </>

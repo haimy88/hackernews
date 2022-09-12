@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 
 const ArticleContext = React.createContext();
@@ -14,17 +14,16 @@ export function ArticleContextProvider({ children }) {
     }
     const path_array = url.split("/");
     let base_url = path_array[2];
-    {
-      (base_url === "github.com" || base_url === "twitter.com") &&
-        (base_url = base_url.concat("/", path_array[3]));
-    }
+
+    (base_url === "github.com" || base_url === "twitter.com") &&
+      (base_url = base_url.concat("/", path_array[3]));
     const base_url_array = base_url.split(".");
-    {
-      (base_url_array[0] === "www" ||
-        base_url_array[0] === "courses" ||
-        base_url_array[0] === "en") &&
-        base_url_array.shift();
-    }
+
+    (base_url_array[0] === "www" ||
+      base_url_array[0] === "courses" ||
+      base_url_array[0] === "en") &&
+      base_url_array.shift();
+
     base_url = base_url_array.join(".");
     return base_url;
   };

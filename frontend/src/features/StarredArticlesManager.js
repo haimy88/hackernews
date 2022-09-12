@@ -14,9 +14,6 @@ export const starredSlice = createSlice({
         (article) => article.id !== action.payload.id
       );
     },
-    resetStarredArticles: (state, action) => {
-      state.value = [];
-    },
   },
 });
 

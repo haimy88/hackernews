@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import StarredArticles from "../components/StarredArticles";
-import { Box, Button } from "@mui/material";
-import axios from "axios";
+import { Box } from "@mui/material";
 
 export default function Starred() {
   const starredActive = true;

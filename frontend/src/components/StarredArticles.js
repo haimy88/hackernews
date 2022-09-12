@@ -63,8 +63,9 @@ export default function StarredArticles() {
   useEffect(() => {
     const getStarredArticles = async () => {
       setIsLoading(true);
+      let saved_articles;
       try {
-        let saved_articles = await checkForStars();
+        saved_articles = await checkForStars();
         saved_articles.map((article) => {
           dispatch(addArticle(article));
         });

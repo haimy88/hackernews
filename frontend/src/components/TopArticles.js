@@ -97,10 +97,15 @@ export default function TopArticles() {
     getStories();
     displayStories();
     const getStarredArticles = async () => {
-      let saved_articles = await checkForStars();
-      saved_articles.map((article) => {
-        dispatch(addArticle(article));
-      });
+      let saved_articles;
+      try {
+        saved_articles = await checkForStars();
+        saved_articles.map((article) => {
+          dispatch(addArticle(article));
+        });
+      } catch (error) {
+        setLoadError(saved_articles);
+      }
     };
     if (!starredArticles.length) {
       getStarredArticles();

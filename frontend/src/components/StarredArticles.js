@@ -69,7 +69,7 @@ export default function StarredArticles() {
           dispatch(addArticle(article));
         });
       } catch (error) {
-        setLoadError("Unable to load Articles");
+        setLoadError(saved_articles);
       }
       setIsLoading(false);
     };

@@ -48,7 +48,7 @@ export function ArticleContextProvider({ children }) {
       });
       return saved_articles;
     } catch (err) {
-      console.log(err);
+      return err.response.data;
     }
   };
 

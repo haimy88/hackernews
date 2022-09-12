@@ -31,7 +31,7 @@ const getStarredArticles = async (req, res) => {
     let articles = await Star.find({ user_ip: req.ip });
     res.status(200).send(articles);
   } catch (err) {
-    res.status(400).send("Unable to retrieve the articles");
+    res.status(400).send("Unable to retrieve your saved articles");
   }
 };
 

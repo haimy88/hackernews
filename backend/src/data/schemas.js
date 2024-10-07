@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const starredSchema = new mongoose.Schema({
-  article_id: Number,
+  article: Object,
   user_ip: String,
   created: { type: Date, default: Date.now() },
 });

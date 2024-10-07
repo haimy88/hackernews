@@ -5,9 +5,10 @@ const path = require("path");
 
 const addArticle = async (req, res) => {
   try {
+    console.log(req.body);
     const newStar = new Star({
       user_ip: req.ip,
-      article_id: req.params.id,
+      article: req.body,
     });
     newStar.save();
     res.status(200).send("article saved successfully");

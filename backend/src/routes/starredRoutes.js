@@ -10,7 +10,7 @@ const {
 } = require("../controllers/starredController");
 
 router.post("/email", validateEmail, sendStarredArticlesEmail);
-router.post("/add/:id", addArticle);
+router.post("/add", addArticle);
 router.get("/", getStarredArticles);
 router.delete("/:id", deleteArticle);
 

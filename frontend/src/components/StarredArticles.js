@@ -18,6 +18,7 @@ import { useArticleContext } from "../contexts/ArticleContext";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { addArticle, deleteArticle } from "../features/StarredArticlesManager";
 import axios from "axios";
+import ArticleItem from "../components/ArticleItem";
 
 export default function StarredArticles() {
   const starredArticles = useSelector((state) => state.starred.value);
@@ -102,160 +103,162 @@ export default function StarredArticles() {
                 color: "primary.light",
                 fontSize: "18px",
                 mt: "40px",
+                ml: -5,
               }}
             >
               {starredArticles.map((item) => (
-                <ListItem
-                  key={item.id}
-                  sx={{
-                    mr: -20,
-                  }}
-                >
-                  <ListItemText
-                    sx={{ ml: "-15px" }}
-                    primary={
-                      <React.Fragment>
-                        <Box sx={{ dislay: "flex" }}>
-                          <Link
-                            underline="hover"
-                            href={item.url}
-                            rel="noopener"
-                            target="_blank"
-                          >
-                            {item.title}
-                          </Link>
-                          <Typography
-                            sx={{
-                              display: "inline",
-                              pl: 1,
-                              fontWeight: 400,
-                            }}
-                            component="span"
-                            variant="type2"
-                            color="primary.light"
-                          >
-                            <Link
-                              underline="hover"
-                              href={`https://news.ycombinator.com/from?site=${item.base_url}`}
-                              rel="noopener"
-                              target="_blank"
-                              color="inherit"
-                            >
-                              {" "}
-                              {"("}
-                              {item.base_url}
-                              {")"}
-                            </Link>
-                          </Typography>
-                        </Box>
-                      </React.Fragment>
-                    }
-                    primaryTypographyProps={{
-                      fontWeight: 700,
-                      color: "primary.main",
-                    }}
-                    secondary={
-                      <React.Fragment>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Typography
-                            component="span"
-                            variant="type2"
-                            color="primary.light"
-                          >
-                            {item.score} points by{" "}
-                            <Link
-                              underline="hover"
-                              href={`https://news.ycombinator.com/user?id=${item.by}`}
-                              rel="noopener"
-                              target="_blank"
-                              color="inherit"
-                            >
-                              {item.by}
-                            </Link>{" "}
-                            <Link
-                              underline="hover"
-                              href={`https://news.ycombinator.com/item?id=${item.id}`}
-                              rel="noopener"
-                              target="_blank"
-                              color="inherit"
-                            >
-                              {Math.round(
-                                (Date.now() / 1000 - item.time) / 3600
-                              )}{" "}
-                              hours ago
-                            </Link>
-                          </Typography>
-                          <Divider
-                            orientation="vertical"
-                            flexItem
-                            variant="middle"
-                            sx={dividerStyle}
-                          />
-                          <Typography
-                            component="span"
-                            variant="type2"
-                            color="primary.light"
-                          >
-                            <Link
-                              underline="hover"
-                              href={`https://news.ycombinator.com/item?id=${item.id}`}
-                              rel="noopener"
-                              target="_blank"
-                              color="inherit"
-                            >
-                              {item.descendants} comments
-                            </Link>
-                          </Typography>
-                          <Divider
-                            orientation="vertical"
-                            flexItem
-                            variant="middle"
-                            sx={dividerStyle}
-                          />
-                          <IconButton
-                            sx={{
-                              p: 0,
-                              mr: 0.2,
-                            }}
-                            onClick={() => deleteStar(item)}
-                            disableRipple
-                          >
-                            <RemoveIcon
-                              sx={{
-                                p: 0,
-                                width: "70%",
-                                color: "primary.light",
-                              }}
-                            />
-                          </IconButton>
-                          <Typography
-                            component="span"
-                            variant="type2"
-                            color="primary.light"
-                          >
-                            remove
-                          </Typography>
-                          {requestErrorId === item.id && (
-                            <Alert
-                              severity="error"
-                              sx={{
-                                fontSize: "11px",
-                                ml: 2,
-                                mb: 1,
-                                height: "36px",
-                                pt: 0,
-                                pb: 0,
-                              }}
-                            >
-                              {requestErrorMessage ||
-                                "unable to process request"}
-                            </Alert>
-                          )}
-                        </Box>
-                      </React.Fragment>
-                    }
-                  />
-                </ListItem>
+                <ArticleItem item={item} />
+                // <ListItem
+                //   key={item.id}
+                //   sx={{
+                //     mr: -20,
+                //   }}
+                // >
+                //   <ListItemText
+                //     sx={{ ml: "-15px" }}
+                //     primary={
+                //       <React.Fragment>
+                //         <Box sx={{ dislay: "flex" }}>
+                //           <Link
+                //             underline="hover"
+                //             href={item.url}
+                //             rel="noopener"
+                //             target="_blank"
+                //           >
+                //             {item.title}
+                //           </Link>
+                //           <Typography
+                //             sx={{
+                //               display: "inline",
+                //               pl: 1,
+                //               fontWeight: 400,
+                //             }}
+                //             component="span"
+                //             variant="type2"
+                //             color="primary.light"
+                //           >
+                //             <Link
+                //               underline="hover"
+                //               href={`https://news.ycombinator.com/from?site=${item.base_url}`}
+                //               rel="noopener"
+                //               target="_blank"
+                //               color="inherit"
+                //             >
+                //               {" "}
+                //               {"("}
+                //               {item.base_url}
+                //               {")"}
+                //             </Link>
+                //           </Typography>
+                //         </Box>
+                //       </React.Fragment>
+                //     }
+                //     primaryTypographyProps={{
+                //       fontWeight: 700,
+                //       color: "primary.main",
+                //     }}
+                //     secondary={
+                //       <React.Fragment>
+                //         <Box sx={{ display: "flex", alignItems: "center" }}>
+                //           <Typography
+                //             component="span"
+                //             variant="type2"
+                //             color="primary.light"
+                //           >
+                //             {item.score} points by{" "}
+                //             <Link
+                //               underline="hover"
+                //               href={`https://news.ycombinator.com/user?id=${item.by}`}
+                //               rel="noopener"
+                //               target="_blank"
+                //               color="inherit"
+                //             >
+                //               {item.by}
+                //             </Link>{" "}
+                //             <Link
+                //               underline="hover"
+                //               href={`https://news.ycombinator.com/item?id=${item.id}`}
+                //               rel="noopener"
+                //               target="_blank"
+                //               color="inherit"
+                //             >
+                //               {Math.round(
+                //                 (Date.now() / 1000 - item.time) / 3600
+                //               )}{" "}
+                //               hours ago
+                //             </Link>
+                //           </Typography>
+                //           <Divider
+                //             orientation="vertical"
+                //             flexItem
+                //             variant="middle"
+                //             sx={dividerStyle}
+                //           />
+                //           <Typography
+                //             component="span"
+                //             variant="type2"
+                //             color="primary.light"
+                //           >
+                //             <Link
+                //               underline="hover"
+                //               href={`https://news.ycombinator.com/item?id=${item.id}`}
+                //               rel="noopener"
+                //               target="_blank"
+                //               color="inherit"
+                //             >
+                //               {item.descendants} comments
+                //             </Link>
+                //           </Typography>
+                //           <Divider
+                //             orientation="vertical"
+                //             flexItem
+                //             variant="middle"
+                //             sx={dividerStyle}
+                //           />
+                //           <IconButton
+                //             sx={{
+                //               p: 0,
+                //               mr: 0.2,
+                //             }}
+                //             onClick={() => deleteStar(item)}
+                //             disableRipple
+                //           >
+                //             <RemoveIcon
+                //               sx={{
+                //                 p: 0,
+                //                 width: "70%",
+                //                 color: "primary.light",
+                //               }}
+                //             />
+                //           </IconButton>
+                //           <Typography
+                //             component="span"
+                //             variant="type2"
+                //             color="primary.light"
+                //           >
+                //             remove
+                //           </Typography>
+                //           {requestErrorId === item.id && (
+                //             <Alert
+                //               severity="error"
+                //               sx={{
+                //                 fontSize: "11px",
+                //                 ml: 2,
+                //                 mb: 1,
+                //                 height: "36px",
+                //                 pt: 0,
+                //                 pb: 0,
+                //               }}
+                //             >
+                //               {requestErrorMessage ||
+                //                 "unable to process request"}
+                //             </Alert>
+                //           )}
+                //         </Box>
+                //       </React.Fragment>
+                //     }
+                //   />
+                // </ListItem>
               ))}
             </List>
             <Box
